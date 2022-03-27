@@ -1,0 +1,57 @@
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types:
+      - update
+
+env:
+  caniuse_repo: Fyrd/caniuse
+  caniuse_ref: main
+  caniuse_path: data.json
+  previous: previous
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+jobs:
+  check-if-necessary:
+    runs-on: ubuntu-latest
+    outputs:
+      previous: ${{ steps.check-if-necessary.outputs.previous }}
+      latest: ${{ steps.check-if-necessary.outputs.latest }}
+      necessary: ${{ steps.check-if-necessary.outputs.necessary }}
+    steps:
+      - id: check-if-necessary
+        run: |
+          previous=$(curl https://raw.githubusercontent.com/${{ github.repository }}/${{ env.previous }}/${{ env.previous }})
+          latest=$(gh api repos/${{ env.caniuse_repo }}/git/trees/${{ env.caniuse_ref }} \
+                      --jq '.tree[] | select(.path == "${{ env.caniuse_path }}") | .sha')
+          echo ::set-output name=previous::$previous
+          echo ::set-output name=latest::$latest
+
+  run:
+    runs-on: ubuntu-latest
+    needs: check-if-necessary
+    if: needs.check-if-necessary.outputs.previous != needs.check-if-necessary.outputs.latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          gh api repos/${{ env.caniuse_repo }}/git/blobs/${{ needs.check-if-necessary.outputs.previous }} --jq '.content' |
+              base64 --decode > old.json
+      - run: curl https://raw.githubusercontent.com/${{ env.caniuse_repo }}/${{ env.caniuse_ref }}/${{ env.caniuse_path }} > new.json
+      - run: yarn
+      - run: yarn validate new.json
+      - run: yarn main old.json new.json
+        env:
+          TWITTER_API_CONFIG: ${{ secrets.TWITTER_API_CONFIG }}
+      - uses: actions/checkout@v3
+        with:
+          path: ${{ env.previous }}
+          ref: ${{ env.previous }}
+      - run: |
+          cd ${{ env.previous }}
+          echo ${{ needs.check-if-necessary.outputs.latest }} > ${{ env.previous }}
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m $(TZ=Asia/Tokyo date +%Y-%m-%dT%H:%M:%S.%N%z)
+          git push

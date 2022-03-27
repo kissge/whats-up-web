@@ -1,0 +1,292 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "Agent": {
+      "additionalProperties": false,
+      "properties": {
+        "abbr": {
+          "type": "string"
+        },
+        "browser": {
+          "type": "string"
+        },
+        "long_name": {
+          "type": "string"
+        },
+        "prefix": {
+          "type": "string"
+        },
+        "prefix_exceptions": {
+          "$ref": "#/definitions/PrefixExceptions"
+        },
+        "type": {
+          "type": "string"
+        },
+        "usage_global": {
+          "$ref": "#/definitions/UsageGlobal"
+        },
+        "versions": {
+          "items": {
+            "type": ["string", "null"]
+          },
+          "type": "array"
+        }
+      },
+      "required": ["browser", "long_name", "abbr", "prefix", "type", "usage_global", "versions"],
+      "type": "object"
+    },
+    "Agents": {
+      "additionalProperties": {
+        "$ref": "#/definitions/Agent"
+      },
+      "type": "object"
+    },
+    "CaniuseData": {
+      "additionalProperties": false,
+      "properties": {
+        "agents": {
+          "$ref": "#/definitions/Agents"
+        },
+        "cats": {
+          "$ref": "#/definitions/Cats"
+        },
+        "data": {
+          "$ref": "#/definitions/Data"
+        },
+        "eras": {
+          "$ref": "#/definitions/Eras"
+        },
+        "statuses": {
+          "$ref": "#/definitions/Statuses"
+        },
+        "updated": {
+          "type": "number"
+        }
+      },
+      "required": ["eras", "agents", "statuses", "cats", "updated", "data"],
+      "type": "object"
+    },
+    "Cats": {
+      "additionalProperties": false,
+      "properties": {
+        "CSS": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "HTML5": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "JS": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "JS API": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "Other": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "SVG": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "Security": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": ["CSS", "HTML5", "JS", "JS API", "Other", "Security", "SVG"],
+      "type": "object"
+    },
+    "Data": {
+      "additionalProperties": {
+        "$ref": "#/definitions/Feature"
+      },
+      "type": "object"
+    },
+    "Eras": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "type": "object"
+    },
+    "Feature": {
+      "additionalProperties": false,
+      "properties": {
+        "categories": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "chrome_id": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "firefox_id": {
+          "type": "string"
+        },
+        "ie_id": {
+          "type": "string"
+        },
+        "keywords": {
+          "type": "string"
+        },
+        "links": {
+          "items": {
+            "$ref": "#/definitions/LinksEntity"
+          },
+          "type": "array"
+        },
+        "notes": {
+          "type": "string"
+        },
+        "notes_by_num": {
+          "$ref": "#/definitions/NotesByNum"
+        },
+        "parent": {
+          "type": "string"
+        },
+        "spec": {
+          "type": "string"
+        },
+        "stats": {
+          "$ref": "#/definitions/Stats"
+        },
+        "status": {
+          "enum": ["rec", "pr", "cr", "wd", "ls", "other", "unoff"],
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "ucprefix": {
+          "type": "boolean"
+        },
+        "usage_perc_a": {
+          "type": "number"
+        },
+        "usage_perc_y": {
+          "type": "number"
+        },
+        "webkit_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "description",
+        "spec",
+        "status",
+        "links",
+        "categories",
+        "stats",
+        "notes",
+        "notes_by_num",
+        "usage_perc_y",
+        "usage_perc_a",
+        "ucprefix",
+        "parent",
+        "keywords",
+        "ie_id",
+        "chrome_id",
+        "firefox_id",
+        "webkit_id"
+      ],
+      "type": "object"
+    },
+    "LinksEntity": {
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": ["url", "title"],
+      "type": "object"
+    },
+    "NotesByNum": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "type": "object"
+    },
+    "Num": {
+      "type": "string"
+    },
+    "PrefixExceptions": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "type": "object"
+    },
+    "Stats": {
+      "additionalProperties": {
+        "additionalProperties": {
+          "$ref": "#/definitions/StatsString"
+        },
+        "type": "object"
+      },
+      "type": "object"
+    },
+    "StatsString": {
+      "type": "string"
+    },
+    "Statuses": {
+      "additionalProperties": false,
+      "properties": {
+        "cr": {
+          "type": "string"
+        },
+        "ls": {
+          "type": "string"
+        },
+        "other": {
+          "type": "string"
+        },
+        "pr": {
+          "type": "string"
+        },
+        "rec": {
+          "type": "string"
+        },
+        "unoff": {
+          "type": "string"
+        },
+        "wd": {
+          "type": "string"
+        }
+      },
+      "required": ["rec", "pr", "cr", "wd", "ls", "other", "unoff"],
+      "type": "object"
+    },
+    "UsageGlobal": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "type": "object"
+    }
+  }
+}

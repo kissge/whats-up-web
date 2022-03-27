@@ -1,0 +1,17 @@
+{
+  "license": "MIT",
+  "scripts": {
+    "main": "ts-node src/main.ts",
+    "validate": "ajv validate -s schema.json -d"
+  },
+  "dependencies": {
+    "ts-node": "^10.7.0",
+    "twitter-api-v2": "^1.11.2"
+  },
+  "devDependencies": {
+    "@tsconfig/node16": "^1.0.2",
+    "@types/node": "^17.0.23",
+    "ajv-cli": "^5.0.0",
+    "typescript": "^4.6.3"
+  }
+}
