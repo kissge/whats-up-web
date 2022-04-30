@@ -11,6 +11,9 @@ env:
   previous: previous
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+concurrency:
+  group: main
+  cancel-in-progress: true
 
 jobs:
   check-if-necessary:
@@ -50,8 +53,8 @@ jobs:
       - run: |
           cd ${{ env.previous }}
           echo ${{ needs.check-if-necessary.outputs.latest }} > ${{ env.previous }}
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add .
           git commit -m $(TZ=Asia/Tokyo date +%Y-%m-%dT%H:%M:%S.%N%z)
           git push
